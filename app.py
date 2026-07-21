@@ -300,4 +300,7 @@ dashboard = vm.Dashboard(
 )
 
 
-Vizro().build(dashboard).run(port=8055)
+import os
+
+port = int(os.environ.get("PORT", 8055))
+Vizro().build(dashboard).run(host="0.0.0.0", port=port)
