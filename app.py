@@ -299,5 +299,11 @@ dashboard = vm.Dashboard(
     pages=[page_volume]
 )
 
+import os
 
-Vizro().build(dashboard).run(port=8055)
+port = int(os.environ.get("PORT", 8055))
+
+Vizro().build(dashboard).run(
+    host="0.0.0.0",
+    port=port,
+)
