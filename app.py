@@ -5,7 +5,6 @@ from dash import html
 import vizro.models as vm
 from vizro import Vizro
 from vizro.models.types import capture
-import os
 
 # ==========================================
 # BUSINESS BLUE PALETTE 
@@ -300,13 +299,5 @@ dashboard = vm.Dashboard(
     pages=[page_volume]
 )
 
-dashboard = Vizro().build()
 
-server = dashboard.server
-
-if __name__ == "__main__":
-    dashboard.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 8050))
-    )
-
+Vizro().build(dashboard).run(port=8055)
