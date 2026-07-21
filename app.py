@@ -300,6 +300,8 @@ dashboard = vm.Dashboard(
 )
 
 
+import vizro
+from vizro import Vizro
 import os
 
 dashboard = Vizro().build()
