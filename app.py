@@ -5,6 +5,7 @@ from dash import html
 import vizro.models as vm
 from vizro import Vizro
 from vizro.models.types import capture
+import os
 
 # ==========================================
 # BUSINESS BLUE PALETTE 
@@ -298,11 +299,6 @@ dashboard = vm.Dashboard(
     title="Dashboard Aktivitas dan Dinamika Volume Aset Keuangan Global",
     pages=[page_volume]
 )
-
-
-import vizro
-from vizro import Vizro
-import os
 
 dashboard = Vizro().build()
 
