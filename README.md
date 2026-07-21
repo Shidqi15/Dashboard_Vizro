@@ -8,5 +8,3 @@
 | **gunicorn**                  | Web server untuk menjalankan aplikasi Python pada lingkungan produksi seperti Render.                              |
 
 
-shidqi rahmanza
-dashboard perdagangan
