@@ -6,3 +6,7 @@
 | **dash-bootstrap-components** | Menyediakan komponen UI berbasis Bootstrap seperti Card, Button, dan Layout agar tampilan dashboard lebih menarik. |
 | **vizro**                     | Framework yang mempermudah pembuatan dashboard analitik dengan memanfaatkan Plotly Dash.                           |
 | **gunicorn**                  | Web server untuk menjalankan aplikasi Python pada lingkungan produksi seperti Render.                              |
+
+
+shidqi rahmanza
+dashboard perdagangan
