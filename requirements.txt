@@ -1,0 +1,6 @@
+vizro
+dash
+plotly
+pandas
+dash-bootstrap-components
+gunicorn
