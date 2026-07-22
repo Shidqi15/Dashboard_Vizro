@@ -123,29 +123,49 @@ def custom_kpi_card(data_frame, value_column=None, agg_func="sum", title=None, v
 # ==========================================
 @capture("graph")
 def make_volume_monthly_bar(data_frame):
-    # Mengelompokkan berdasarkan tahun dan menghitung total volume
     df_agg = data_frame.groupby('Tahun', as_index=False)['volume'].sum()
 
     fig = raw_px.bar(
         df_agg, x="Tahun", y="volume",
-        color_discrete_sequence=[BUSINESS_COLORS[0]], # Gunakan satu warna atau bisa diubah
+        color_discrete_sequence=[BUSINESS_COLORS[0]],
         text_auto=".2s",
         labels={"Tahun": "Tahun", "volume": "Volume($)"},
         title="Total Volume Perdagangan Cryptocurrency (2021-2026)"
     )
 
-    # Atur x-axis agar hanya menampilkan tahun bulat (2021, 2022, ...)
+    fig.update_traces(textposition='outside', cliponaxis=False)
+    fig.update_yaxes(
+        range=[0, 220000000000000],   # dikunci: 0 s/d 220 Triliun (beri sedikit headroom di atas 200T)
+        tickmode="linear",
+        tick0=0,
+        dtick=100000000000000,        # jarak antar tick = 100 Triliun
+        tickformat="~s"
+    )
     fig.update_xaxes(dtick=1)
     fig.update_layout(xaxis_title=None)
 
     return customize_fig(fig)
 
+
 @capture("graph")
 def make_volume_asset_bar(data_frame):
-    # Mengelompokkan berdasarkan asset dan menghitung total volume
+    import math
+
     df_agg = data_frame.groupby('asset_name', as_index=False)['volume'].sum()
-    # Mengurutkan dari yang terbesar
     df_agg = df_agg.sort_values(by='volume', ascending=False)
+    raw_max = df_agg['volume'].max() * 1.05
+
+    magnitude = 10 ** math.floor(math.log10(raw_max))
+    step = raw_max / magnitude
+    if step <= 1:
+        nice_step = 1
+    elif step <= 2.5:
+        nice_step = 2
+    elif step <= 6:
+        nice_step = 5
+    else:
+        nice_step = 10
+    y_max = nice_step * magnitude
 
     fig = raw_px.bar(
         df_agg, x="asset_name", y="volume", color="asset_name",
@@ -155,6 +175,14 @@ def make_volume_asset_bar(data_frame):
         title="Total Volume Perdagangan Berdasarkan Aset Cryptocurrency"
     )
 
+    fig.update_traces(textposition='outside', cliponaxis=False)
+    fig.update_yaxes(
+        range=[0, y_max * 1.15],   # <-- range diberi headroom 15% ekstra untuk ruang label
+        tickmode="linear",
+        tick0=0,
+        dtick=y_max / 2,           # <-- dtick tetap dari y_max asli, jadi tick tetap 0, 250T, 500T
+        tickformat="~s"
+    )
     fig.update_layout(
         showlegend=False,
         xaxis_title=None,
@@ -163,10 +191,25 @@ def make_volume_asset_bar(data_frame):
     fig.update_xaxes(tickfont=dict(size=12))
 
     return customize_fig(fig)
-
 @capture("graph")
 def make_volume_trend_line(data_frame):
+    import math
+
     df_agg = data_frame.groupby('date', as_index=False)['volume'].sum()
+    raw_max = df_agg['volume'].max() * 1.15
+
+    # Membulatkan raw_max ke angka rapi terdekat
+    magnitude = 10 ** math.floor(math.log10(raw_max))
+    step = raw_max / magnitude
+    if step <= 1:
+        nice_step = 1
+    elif step <= 2.5:
+        nice_step = 2
+    elif step <= 5:
+        nice_step = 5
+    else:
+        nice_step = 10
+    y_max = nice_step * magnitude
 
     fig = raw_px.line(
         df_agg,
@@ -181,6 +224,13 @@ def make_volume_trend_line(data_frame):
         dtick="M6",
         tickformat="%b %Y",
         tickangle=0
+    )
+    fig.update_yaxes(
+        range=[0, y_max],
+        tickmode="linear",
+        tick0=0,
+        dtick=y_max / 2,
+        tickformat="~s"
     )
 
     fig.update_layout(
@@ -200,8 +250,6 @@ def make_volume_trend_line(data_frame):
     )
 
     return fig
-
-    return customize_fig(fig, is_area=True)
 
 @capture("graph")
 def make_volume_market_share(data_frame):
